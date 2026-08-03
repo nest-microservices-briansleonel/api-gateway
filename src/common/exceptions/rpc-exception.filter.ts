@@ -43,6 +43,15 @@ export class RpcCustomExceptionFilter implements ExceptionFilter {
       return rpcError;
     }
 
+    if (rpcError.toString().includes('Empty response')) {
+      return {
+        status: HttpStatus.INTERNAL_SERVER_ERROR,
+        message: rpcError
+          .toString()
+          .substring(0, rpcError.toString().indexOf('(') - 1),
+      };
+    }
+
     return {
       status: HttpStatus.BAD_REQUEST,
       message: typeof rpcError === 'string' ? rpcError : 'Unexpected error',
